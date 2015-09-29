@@ -758,7 +758,8 @@ def main():
 				info += FG_CYA + '/' + domain['country'] + FG_RST
 			if 'banner-http' in domain:
 				info += ' %sHTTP:%s"%s"%s' % (FG_GRE, FG_CYA, domain['banner-http'], FG_RST)
-		elif 'ns' in domain:
+			info += ' '
+		if 'ns' in domain:
 			info += '%sNS:%s%s%s' % (FG_GRE, FG_CYA, domain['ns'], FG_RST)
 
 		if 'aaaa' in domain:
