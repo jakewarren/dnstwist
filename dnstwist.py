@@ -29,6 +29,7 @@ import time
 import argparse
 import threading
 from random import randint
+from os import path
 
 try:
 	import queue
@@ -47,6 +48,9 @@ try:
 except ImportError:
 	module_geoip = False
 	pass
+
+geoip_db = path.exists("/usr/share/GeoIP/GeoIP.dat")
+
 try:
 	import whois
 	module_whois = True
@@ -65,8 +69,8 @@ except ImportError:
 	module_requests = False
 	pass
 
-REQUEST_TIMEOUT_DNS = 1
-REQUEST_TIMEOUT_HTTP = 2
+REQUEST_TIMEOUT_DNS = 5
+REQUEST_TIMEOUT_HTTP = 5
 THREAD_COUNT_DEFAULT = 10
 
 if sys.platform != 'win32' and sys.stdout.isatty():
@@ -112,8 +116,10 @@ def p_csv(data):
 def sigint_handler(signal, frame):
 	sys.stdout.write(FG_RST + ST_RST)
 	sys.stdout.write('\nStopping threads... ')
+	sys.stdout.flush()
 	for worker in threads:
 		worker.stop()
+	time.sleep(1)
 	sys.stdout.write('Done\n')
 	sys.exit(0)
 
@@ -390,7 +396,7 @@ class fuzz_domain():
 					if c in glyphs:
 						win_copy = win
 						for g in glyphs[c]:
-							win = win[:j] + g + win[j+1:]
+							win = win.replace(c, g)
 							result.append(self.domain[:i] + win + self.domain[i+ws:])
 							win = win_copy
 					j += 1
@@ -560,7 +566,7 @@ class thread_domain(threading.Thread):
 			domain = self.jobs.get()
 			if module_dnspython:
 				resolv = dns.resolver.Resolver()
-				#resolv.lifetime = REQUEST_TIMEOUT_DNS
+				resolv.lifetime = REQUEST_TIMEOUT_DNS
 				resolv.timeout = REQUEST_TIMEOUT_DNS
 
 				try:
@@ -611,7 +617,7 @@ class thread_domain(threading.Thread):
 					except Exception:
 						pass
 
-			if module_geoip and args.geoip:
+			if module_geoip and geoip_db and args.geoip:
 				if 'a' in domain:
 					gi = GeoIP.new(GeoIP.GEOIP_MEMORY_CACHE)
 					try:
@@ -697,6 +703,8 @@ def main():
 		p_out(FG_YEL + 'NOTICE: Missing module: dnspython - DNS features limited!\n\n' + FG_RST)
 	if not module_geoip and args.geoip:
 		p_out(FG_YEL + 'NOTICE: Missing module: GeoIP - geographical location not available!\n\n' + FG_RST)
+	if not geoip_db and args.geoip:
+		p_out(FG_YEL + 'NOTICE: Missing file: /usr/share/GeoIP/geoIP.dat - geographical location not available!\n\n' + FG_RST)
 	if not module_whois and args.whois:
 		p_out(FG_YEL + 'NOTICE: Missing module: whois - database not accessible!\n\n' + FG_RST)
 	if not module_ssdeep and args.ssdeep:
@@ -741,8 +749,11 @@ def main():
 		p_out('.')
 		time.sleep(1)
 
-	p_out(' %d hit(s)\n\n' % sum('ns' in d or 'a' in d for d in domains))
+	for worker in threads:
+		worker.stop()
 
+	p_out(' %d hit(s)\n\n' % sum('ns' in d or 'a' in d for d in domains))
+	time.sleep(1)
 
 	p_csv('Fuzzer,Domain,A,AAAA,MX,NS,Country,Created,Updated,SSDEEP\n')
 
