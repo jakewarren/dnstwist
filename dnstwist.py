@@ -792,9 +792,6 @@ def main():
 		if 'aaaa' in domain:
 			info += domain['aaaa'] + ' '
 
-		if 'ns' in domain:
-			info += '%sNS:%s%s%s ' % (FG_GRE, FG_CYA, domain['ns'], FG_RST)
-
 		if 'mx' in domain:
 			if 'mx-spy' in domain:
 				info += '%sSPYING-MX:%s%s%s' % (FG_YEL, FG_CYA, domain['mx'], FG_RST)
