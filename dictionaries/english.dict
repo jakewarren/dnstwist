@@ -1,19 +1,30 @@
 // This dictionary (should) contain the most common words used in targeted
 // phishing campaigns. Feel free to adapt it to your needs.
 
+access
 auth
+account
+accountverification
 download
+docs
+confirm
+helpdesk
 install
 login
+my
 online
 register
+signin
 ssl
 secure
 security
+services
 support
+support-team
 update
 verify
 verification
 vpn
 mail
 webmail
+email
