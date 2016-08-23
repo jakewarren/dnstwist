@@ -407,7 +407,7 @@ class dict_domain(fuzz_domain):
 		if path.exists(file):
 			for word in open(file):
 				word = word.strip('\n')
-				if word.isalpha() and word not in self.dictionary:
+                                if re.match("^[a-z-]+$",word) and word not in self.dictionary:
 					self.dictionary.append(word)
 
 	def __dictionary(self):
