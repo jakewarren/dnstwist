@@ -4,6 +4,7 @@
 
 access
 account
+accounts
 accountverification
 agree
 api
@@ -11,6 +12,7 @@ app
 auth
 bill
 billing
+box
 career
 careers
 cdn
@@ -19,13 +21,21 @@ confirmation
 data
 dfir
 docs
+docusign
 download
+dropbox
 email
 expert
 feedback
 find
 forgot
+gdocs
+gdrive
 giveaway
+gmail
+google
+googledrive
+google-drive
 guest
 guestnet
 guest-net
@@ -47,7 +57,10 @@ net
 network
 news
 newsroom
+office365
+onedrive
 online
+outlook
 payment
 payments
 proxy
@@ -62,6 +75,7 @@ secure
 security
 service
 services
+sharepoint
 shop
 signin
 ssl
